@@ -1,4 +1,4 @@
-project_name: flipbit
+project_name: bitflip
 builds:
 - env:
   - CGO_ENABLED=0

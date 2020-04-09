@@ -14,10 +14,25 @@ import (
 	"github.com/urfave/cli"
 )
 
+const (
+	version = "dev"
+	commit  = "HEAD"
+	builtBy = "dev"
+)
+
 func main() {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	app := cli.NewApp()
+	app.Name = "bitflip"
+	app.Usage = "Flip bits in files."
+	app.Author = "Antoine Grondin"
+	app.Email = "antoinegrondin@gmail.com"
+	app.Version = version + "@" + commit
+	app.Metadata = map[string]interface{}{
+		"commit":  commit,
+		"builtBy": builtBy,
+	}
 	app.Commands = []cli.Command{
 		cli.Command{
 			Name:        "offset",
