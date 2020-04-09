@@ -3,13 +3,13 @@
 set -Eeuo pipefail
 
 REPO=$(git rev-parse --show-toplevel)
-VERSION=$(git rev-parse HEAD)
-GIT_TAG=$(git name-rev --tags --name-only $VERSION)
+REVISION=$(git rev-parse HEAD)
+GIT_TAG=${GIT_TAG-$(git name-rev --tags --name-only $REVISION | sed -e "s/^v//")}
 
 function main {
   require_is_installed 'temple' 'find how to install it at https://github.com/aybabtme/temple'
 
-  temple file < README.tmpl.md > ${REPO}/README.md -var "version=$VERSION"
+  temple file < ${REPO}/script/README.tmpl.md > ${REPO}/README.md -var "version=$GIT_TAG"
 }
 
 function require_is_installed {

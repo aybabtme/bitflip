@@ -11,7 +11,7 @@ If you want to flip bits in files, this utility has got you covered. Flip specif
 ### Debian/Ubuntu
 
 ```bash
-wget -O https://github.com/aybabtme/bitflip/releases/download/v{{.version}}/bitflip_{{.version}}_linux_amd64.deb
+wget https://github.com/aybabtme/bitflip/releases/download/v{{.version}}/bitflip_{{.version}}_linux_amd64.deb
 dpkg -i bitflip_{{.version}}_linux_amd64.deb
 ```
 
