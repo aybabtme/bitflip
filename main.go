@@ -101,6 +101,45 @@ func main() {
 				return nil
 			},
 		},
+		cli.Command{
+			Name:        "spray",
+			Description: "flip a bunch of bits at random in a file",
+			Usage:       "spray-pattern filepath",
+			ArgsUsage: `spray-pattern filepath
+
+			spray-pattern: is a pattern that describe how to spray bitflips. It takes the form
+										 <type>:<args> where <type> is a type of spray, and <args> depends on
+										 the type. Valid values for <type> are:
+
+			    - percent: pattern "percent:double" sprays a random and uniform percentage of bits. e.g:
+
+			               bitflip spray percent:11.5 /var/lib/mysqld/db
+
+			filepath: is the file in which to do the random bitflipping`,
+			Action: func(cctx *cli.Context) error {
+				if cctx.NArg() != 2 {
+					return cli.ShowCommandHelp(cctx, "spray")
+				}
+				sprayerFactory, err := parseSprayPattern(cctx.Args().Get(0))
+				if err != nil {
+					return err
+				}
+				filename := cctx.Args().Get(1)
+
+				file, err := os.OpenFile(filename, os.O_RDWR, 0)
+				if err != nil {
+					return err
+				}
+				defer file.Close()
+
+				fi, err := file.Stat()
+				if err != nil {
+					return err
+				}
+				sprayer := sprayerFactory(fi)
+				return sprayer.Spray(file, flipBitAtOffset)
+			},
+		},
 	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatal(err)
@@ -130,6 +169,8 @@ func parseByteOffset(offset string) (byteOffset uint64, bitOffset uint8, err err
 	bitOffset = uint8(iBitOffset)
 	return byteOffset, bitOffset, nil
 }
+
+type bitflipFunc func(file io.ReadWriteSeeker, byteOffset int64, bitOffset uint8) error
 
 func flipBitAtOffset(file io.ReadWriteSeeker, byteOffset int64, bitOffset uint8) error {
 	_, err := file.Seek(byteOffset, io.SeekStart)
