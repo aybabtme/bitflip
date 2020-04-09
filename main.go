@@ -5,14 +5,18 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"math/rand"
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/urfave/cli"
 )
 
 func main() {
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
+
 	app := cli.NewApp()
 	app.Commands = []cli.Command{
 		cli.Command{
@@ -34,13 +38,47 @@ func main() {
 					return err
 				}
 				filename := cctx.Args().Get(1)
-				log.Printf("flipping %dth bit of byte %d in file %q", bitOffset, byteOffset, filename)
-				file, err := os.Open(filename)
+
+				file, err := os.OpenFile(filename, os.O_RDWR, 0)
 				if err != nil {
 					return err
 				}
 				defer file.Close()
 
+				log.Printf("flipping %dth bit of byte %d in file %q", bitOffset, byteOffset, filename)
+				if err := flipBitAtOffset(file, int64(byteOffset), bitOffset); err != nil {
+					return fmt.Errorf("flipping bit: %v", err)
+				}
+
+				return nil
+			},
+		},
+		cli.Command{
+			Name:        "random",
+			Description: "flip a random bit in a file",
+			Usage:       "filepath",
+			ArgsUsage: `filepath
+			filepath: is the file in which to do the random bitflipping`,
+			Action: func(cctx *cli.Context) error {
+				if cctx.NArg() != 1 {
+					return cli.ShowCommandHelp(cctx, "random")
+				}
+				filename := cctx.Args().Get(0)
+
+				file, err := os.OpenFile(filename, os.O_RDWR, 0)
+				if err != nil {
+					return err
+				}
+				defer file.Close()
+
+				fi, err := file.Stat()
+				if err != nil {
+					return err
+				}
+				byteOffset := r.Int63n(fi.Size())
+				bitOffset := uint8(r.Intn(8))
+
+				log.Printf("flipping %dth bit of byte %d in file %q", bitOffset, byteOffset, filename)
 				if err := flipBitAtOffset(file, int64(byteOffset), bitOffset); err != nil {
 					return fmt.Errorf("flipping bit: %v", err)
 				}
