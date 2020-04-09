@@ -29,6 +29,7 @@ func main() {
 	app.Author = "Antoine Grondin"
 	app.Email = "antoinegrondin@gmail.com"
 	app.Version = version + "@" + commit
+	app.Description = "If you want to flip bits in files, this utility has got you covered. Flip specific bits, randomly flip a single bit, or spray hell all around..! Whatever rocks your boat, as long as you need some bits flipped."
 	app.Metadata = map[string]interface{}{
 		"commit":  commit,
 		"builtBy": builtBy,
