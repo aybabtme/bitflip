@@ -19,3 +19,16 @@ changelog:
     exclude:
     - '^docs:'
     - '^test:'
+brews:
+  - name: bitflip
+    github:
+      owner: aybabtme
+      name: homebrew-tap
+    commit_author:
+      name: goreleaserbot
+      email: antoinegrondin@gmail.com
+
+nfpms:
+  - package_name: bitflip
+    formats:
+      - deb
