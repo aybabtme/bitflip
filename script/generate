@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+REPO=$(git rev-parse --show-toplevel)
+VERSION=$(git rev-parse HEAD)
+GIT_TAG=$(git name-rev --tags --name-only $VERSION)
+
+function main {
+  require_is_installed 'temple' 'find how to install it at https://github.com/aybabtme/temple'
+
+  temple file < README.tmpl.md > ${REPO}/README.md -var "version=$VERSION"
+}
+
+function require_is_installed {
+  local program=$1
+  local install_instructions=$2
+  if [ -z $(which $program) ]; then
+    echo "you need to install '${program}' to run this script: ${install_instructions}"
+    exit 1
+  fi
+}
+
+main
