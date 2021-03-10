@@ -8,7 +8,7 @@ Flip bits in files.
 ```bash
 $ echo hello world > /tmp/hello.world
 $ cat < /tmp/hello.world
-hehlo world
+hello world
 $ bitflip random  /tmp/hello.world
 2020/04/09 17:40:55 flipping 2th bit of byte 6 in file "/tmp/hello.world"
 $ cat < /tmp/hello.world
