@@ -35,8 +35,8 @@ bitflip spray percent:0.1 /var/lib/mysql/mydb.idb
 ### Debian/Ubuntu
 
 ```bash
-wget https://github.com/aybabtme/bitflip/releases/download/v0.2.0/bitflip_0.2.0_linux_amd64.deb
-dpkg -i bitflip_0.2.0_linux_amd64.deb
+wget https://github.com/aybabtme/bitflip/releases/download/v0.2.1/bitflip_0.2.1_linux_amd64.deb
+dpkg -i bitflip_0.2.1_linux_amd64.deb
 ```
 
 ### darwin
@@ -54,7 +54,7 @@ that being said, you can run goreleaser as follows:
 
 ### Update or install goreleaser
 
-```sg
+```sh
 go install github.com/goreleaser/goreleaser/v2@latest
 ```
 
