@@ -1,18 +1,40 @@
 project_name: bitflip
+version: 2
 builds:
-- env:
-  - CGO_ENABLED=0
+- env: [CGO_ENABLED=0]
+  goos:
+    - linux
+    - windows
+    - darwin
+    - freebsd    
+  ignore:
+    - goos: linux
+      goarch: arm64
+    - goos: darwin
+      goarch: arm64
+    - goos: freebsd
+      goarch: 386
+    - goos: freebsd
+      goarch: arm64
+    - goos: windows
+      goarch: arm64      
 archives:
-- replacements:
-    darwin: Darwin
-    linux: Linux
-    windows: Windows
-    386: i386
-    amd64: x86_64
+- name_template: >-
+    {{ .ProjectName }}_
+    {{ .Version }}_
+    {{- title .Os }}_
+    {{- if eq .Arch "amd64" }}x86_64
+    {{- else if eq .Arch "386" }}i386
+    {{- else if eq .Arch "arm64" }}arm64    
+    {{- else }}{{ .Arch }}{{ end }}
+  format: tar.gz
+  format_overrides:
+     - goos: windows
+       format: zip    
 checksum:
   name_template: 'checksums.txt'
 snapshot:
-  name_template: "{{ .Tag }}-next"
+  version_template: "{{ .Tag }}-next"
 changelog:
   sort: asc
   filters:
@@ -21,14 +43,14 @@ changelog:
     - '^test:'
 brews:
   - name: bitflip
-    github:
+    repository:
       owner: aybabtme
       name: homebrew-tap
     commit_author:
       name: goreleaserbot
       email: antoinegrondin@gmail.com
-
 nfpms:
   - package_name: bitflip
+    maintainer: Antoine Grondin <antoinegrondin@gmail.com>
     formats:
       - deb
